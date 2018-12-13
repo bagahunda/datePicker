@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style['date-picker']">
+  <div :class="$style['date-picker']" v-clickOutside="closeOptions">
     <div
       :class="[$style['date-picker__value'], showOptions ? $style.activeOptions : '']"
       @click="activateDatePicker"
@@ -17,7 +17,7 @@
             <span
               v-for="(day, index) in days"
               :key="index"
-              :class="date.day === day ? active : ''"
+              :class="[date.day === day.day ? $style.active : '', day.disabled ? $style['date-picker__item--disabled'] : '']"
               @click="onSelectDay($event)"
             >{{ day.day }}</span>
           </div>
@@ -25,7 +25,7 @@
             <span
               v-for="(month, index) in months"
               :key="index + 101"
-              :class="[$style['date-picker__month'], month.disabled ? $style['date-picker__item--disabled'] : '']"
+              :class="[date.month === month.month ? $style.active : '', month.disabled ? $style['date-picker__item--disabled'] : '']"
               @click="onSelectMonth($event)"
             >{{ month.month }}</span>
           </div>
@@ -33,8 +33,9 @@
             <span
               v-for="(year, index) in years"
               :key="index + 901"
+              :class="[date.year === year.year ? $style.active : '', year.disabled ? $style['date-picker__item--disabled'] : '']"
               @click="onSelectYear($event)"
-            >{{ year }}</span>
+            >{{ year.year }}</span>
           </div>
         </div>
       </div>
@@ -45,24 +46,12 @@
 <script>
 let date = new Date();
 let year = date.getFullYear();
+let day = date.getDay();
+let month = date.getMonth();
 let years = [];
-let months = [
-  { month: "january", disabled: false },
-  { month: "february", disabled: false },
-  { month: "march", disabled: false },
-  { month: "april", disabled: false },
-  { month: "may", disabled: false },
-  { month: "june", disabled: false },
-  { month: "july", disabled: false },
-  { month: "august", disabled: false },
-  { month: "september", disabled: false },
-  { month: "october", disabled: false },
-  { month: "november", disabled: false },
-  { month: "december", disabled: false }
-];
 let days = [];
 for (let i = 0; i < 10; i++) {
-  years.push(year - i);
+  years.push({ year: year - i, disabled: false });
 }
 for (let i = 0; i < 31; i++) {
   days.push({ day: 31 - i, disabled: false });
@@ -75,13 +64,35 @@ export default {
     value: {
       type: [String, Number, Date],
       default: ""
+    },
+    disabledDays: {
+      type: Array
+    },
+    disabledMonths: {
+      type: Array
+    },
+    disabledYears: {
+      type: Array
     }
   },
 
   data() {
     return {
       days: days.reverse(),
-      months: months,
+      months: [
+        { month: "january", disabled: false },
+        { month: "february", disabled: false },
+        { month: "march", disabled: false },
+        { month: "april", disabled: false },
+        { month: "may", disabled: false },
+        { month: "june", disabled: false },
+        { month: "july", disabled: false },
+        { month: "august", disabled: false },
+        { month: "september", disabled: false },
+        { month: "october", disabled: false },
+        { month: "november", disabled: false },
+        { month: "december", disabled: false }
+      ],
       years: years.reverse(),
       showOptions: false,
       selectDay: false,
@@ -110,10 +121,41 @@ export default {
     }
   },
 
+  created() {
+    if (this.disabledDays) {
+      for (let i of this.disabledDays) {
+        this.days[i - 1].disabled = true;
+      }
+    }
+
+    if (this.disabledMonths) {
+      for (let i of this.disabledMonths) {
+        this.months[i - 1].disabled = true;
+      }
+    }
+
+    if (this.disabledYears) {
+      for (let i in this.disabledYears) {
+        for (let j in this.years) {
+          if (this.years[j].year === this.disabledYears[i]) {
+            this.years[j].disabled = true;
+          }
+        }
+      }
+    }
+  },
+
   methods: {
     activateDatePicker() {
       this.showOptions = true;
       this.selectDay = true;
+    },
+
+    closeOptions() {
+      this.showOptions = false;
+      this.selectDay = false;
+      this.selectMonth = false;
+      this.selectYear = false;
     },
 
     onSelectDay(e) {
