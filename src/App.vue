@@ -1,28 +1,59 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="date">
+    <date-picker v-model="date"></date-picker>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import DatePicker from "@/components/DatePicker";
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
+    DatePicker
+  },
+
+  data() {
+    return {
+      date: ""
+    };
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.date {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.expand-enter-active,
+.expand-leave-active {
+  transition: height 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.expand-enter,
+.expand-leave-to {
+  height: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.2s ease-in-out;
+}
+
+.slide-enter-active {
+  transition-delay: 0.2s;
+}
+
+.slide-enter {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.slide-leave-to {
+  transform: translateX(-10px);
+  opacity: 0;
 }
 </style>
