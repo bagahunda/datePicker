@@ -1,7 +1,7 @@
 <template>
-  <div :class="$style['date-picker']" v-clickOutside="closeOptions">
+  <div :class="$style['picker']" v-clickOutside="closeOptions">
     <div
-      :class="[$style['date-picker__value'], showOptions ? $style.activeOptions : '']"
+      :class="[$style['picker__value'], showOptions ? $style.activeOptions : '']"
       @click="activateDatePicker"
     >
       <b :class="selectDay ? $style.active : ''">{{ date.day ? date.day : 'day' }}</b>
@@ -11,29 +11,29 @@
       <b :class="selectYear ? $style.active : ''">{{ date.year ? date.year : 'year' }}</b>
     </div>
     <transition name="expand" @enter="enter" @after-enter="afterEnter" @leave="leave">
-      <div :class="$style['date-picker__options']" v-if="showOptions">
-        <div :class="$style['date-picker__options-container']" :style="{marginLeft: optionsMargin}">
-          <div :class="$style['date-picker__item']">
+      <div :class="$style['picker__options']" v-if="showOptions">
+        <div :class="$style['picker__options-container']" :style="{marginLeft: optionsMargin}">
+          <div :class="$style['picker__item']">
             <span
               v-for="(day, index) in days"
               :key="index"
-              :class="[date.day === day.day ? $style.active : '', day.disabled ? $style['date-picker__item--disabled'] : '']"
+              :class="[date.day === day.day ? $style.active : '', day.disabled ? $style['picker__item--disabled'] : '']"
               @click="onSelectDay($event)"
             >{{ day.day }}</span>
           </div>
-          <div :class="[$style['date-picker__item'], $style['date-picker__item--month']]">
+          <div :class="[$style['picker__item'], $style['picker__item--month']]">
             <span
               v-for="(month, index) in months"
               :key="index + 101"
-              :class="[date.month === month.month ? $style.active : '', month.disabled ? $style['date-picker__item--disabled'] : '']"
+              :class="[date.month === month.month ? $style.active : '', month.disabled ? $style['picker__item--disabled'] : '']"
               @click="onSelectMonth($event)"
             >{{ month.month }}</span>
           </div>
-          <div :class="$style['date-picker__item']">
+          <div :class="$style['picker__item']">
             <span
               v-for="(year, index) in years"
               :key="index + 901"
-              :class="[date.year === year.year ? $style.active : '', year.disabled ? $style['date-picker__item--disabled'] : '']"
+              :class="[date.year === year.year ? $style.active : '', year.disabled ? $style['picker__item--disabled'] : '']"
               @click="onSelectYear($event)"
             >{{ year.year }}</span>
           </div>
@@ -44,6 +44,32 @@
 </template>
 
 <script>
+let clickOutside = {
+  bind(el, binding, vNode) {
+    // Provided expression must evaluate to a function.
+    if (typeof binding.value !== "function") {
+      const compName = vNode.context.name;
+      let warn = `[Click-outside:] provided expression '${
+        binding.expression
+      }' is not a function, but has to be`;
+      if (compName) {
+        warn += `Found in component '${compName}'`;
+      }
+      console.warn(warn);
+    }
+
+    el.__ClickOutsideHandler__ = event => {
+      if (!(el === event.target || el.contains(event.target))) {
+        binding.value(event);
+      }
+    };
+    document.body.addEventListener("click", el.__ClickOutsideHandler__);
+  },
+  unbind(el) {
+    document.body.removeEventListener("click", el.__ClickOutsideHandler__);
+    delete el.__ClickOutsideHandler__;
+  }
+};
 let date = new Date();
 let year = date.getFullYear();
 let day = date.getDay();
@@ -161,13 +187,6 @@ export default {
     onSelectDay(e) {
       this.selectDay = false;
       this.date.day = e.target.innerText;
-      for (let i in this.months) {
-        let counter = i * 1 + 1;
-        let qty = this.getDaysInMonth(counter, year);
-        if (this.date.day * 1 > qty) {
-          this.months[i].disabled = true;
-        }
-      }
       this.selectMonth = true;
     },
 
@@ -183,10 +202,6 @@ export default {
       this.showOptions = false;
       let val = new Date(this.date.day + this.date.month + this.date.year);
       this.$emit("input", val);
-    },
-
-    getDaysInMonth(month, year) {
-      return new Date(year, month, 0).getDate();
     },
 
     enter(el) {
@@ -219,12 +234,16 @@ export default {
         el.style.height = 0;
       });
     }
+  },
+
+  directives: {
+    clickOutside
   }
 };
 </script>
 
 <style module>
-.date-picker {
+.picker {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   position: relative;
@@ -236,13 +255,13 @@ export default {
   box-sizing: border-box;
 }
 
-.date-picker *,
-.date-picker *:before,
-.date-picker *:after {
+.picker *,
+.picker *:before,
+.picker *:after {
   box-sizing: inherit;
 }
 
-.date-picker__value {
+.picker__value {
   box-sizing: border-box;
   width: 100%;
   padding: 1em 2em;
@@ -256,22 +275,22 @@ export default {
   border-bottom: 1px solid rgba(17, 17, 19, 0.4);
 }
 
-.date-picker__value span {
+.picker__value span {
   padding: 0 0.5em;
   color: rgba(17, 17, 19, 0.4);
   font-weight: 200;
 }
 
-.date-picker__value .active {
+.picker__value .active {
   color: #ee2455;
 }
 
-.date-picker__options {
+.picker__options {
   overflow: hidden;
   font-size: 0.8em;
 }
 
-.date-picker__options-container {
+.picker__options-container {
   width: 840px;
   display: flex;
   justify-content: flex-start;
@@ -279,14 +298,14 @@ export default {
   transition: all 0.2s ease-in-out;
 }
 
-.date-picker__options span:hover,
-.date-picker__options span.active {
+.picker__options span:hover,
+.picker__options span.active {
   background-color: #ee2455;
   color: white;
 }
 
 @supports (grid-area: auto) {
-  .date-picker__item {
+  .picker__item {
     width: 100%;
     padding: 1em;
     display: grid;
@@ -294,11 +313,11 @@ export default {
     grid-gap: 5px 10px;
   }
 
-  .date-picker__item--month {
+  .picker__item--month {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .date-picker__item span {
+  .picker__item span {
     padding: 5px;
     text-align: center;
     border-radius: 3px;
@@ -306,13 +325,13 @@ export default {
   }
 }
 
-.date-picker__item--disabled {
+.picker__item--disabled {
   color: rgba(17, 17, 19, 0.4);
   pointer-events: none;
   cursor: not-allowed;
 }
 
-/* .date-picker__item {
+/* .picker__item {
   width: 280px;
   padding: 1em;
   display: flex;
@@ -320,7 +339,7 @@ export default {
   flex-wrap: wrap;
 }
 
-.date-picker__day span {
+.picker__day span {
   width: calc((100% - 60px) / 7);
   padding: 5px;
   margin: 0 5px 1em;
@@ -329,11 +348,11 @@ export default {
   border-radius: 3px;
 }
 
-.date-picker__day span:last-child {
+.picker__day span:last-child {
   margin-right: auto;
 }
 
-.date-picker__month {
+.picker__month {
   width: 280px;
   padding: 1em;
   display: flex;
@@ -342,7 +361,7 @@ export default {
   flex-wrap: wrap;
 }
 
-.date-picker__month span {
+.picker__month span {
   width: calc((100% - 20px) / 3);
   margin: 0 0 1em;
   padding: 5px;
@@ -351,7 +370,7 @@ export default {
   border-radius: 3px;
 }
 
-.date-picker__year {
+.picker__year {
   width: 280px;
   padding: 1em;
   display: flex;
@@ -360,7 +379,7 @@ export default {
   flex-wrap: wrap;
 }
 
-.date-picker__year span {
+.picker__year span {
   width: calc((100% - 30px) / 4);
   margin: 0 0 1em;
   padding: 5px;

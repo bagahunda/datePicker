@@ -1,8 +1,6 @@
 import Vue from "vue";
+import "./components/index";
 import App from "./App.vue";
-import ClickOutsideDirective from "./directives/ClickOutside";
-
-Vue.directive("clickOutside", ClickOutsideDirective);
 
 Vue.config.productionTip = false;
 
