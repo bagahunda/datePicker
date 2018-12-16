@@ -1,29 +1,31 @@
-# datePicker
+# OH-MY-DATE
 
-## Project setup
-```
-npm install
-```
+## Simple and alegant datepicker. Finally 🤘
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## How to use
 
-### Compiles and minifies for production
+### Install via npm:
+
 ```
-npm run build
+npm install oh-my-date
 ```
 
-### Run your tests
+### Use in your templates:
+
 ```
-npm run test
+<date-picker></date-picker>
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+## Settings
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### You can customize datepicker via props:
+
+| prop                                      |                                          effect |
+| ----------------------------------------- | ----------------------------------------------: |
+| yearsPeriod="30"                          |                     show 30 years in years list |
+| :disabledDays="[3,10,20]"                 |   you can disable some days from being selected |
+| :disabledMonths="['january', 'february']" | you can disable some months from being selected |
+| :disabledYears=['1917', '2008']           |  you can disable some years from being selected |
+| theme="flat"                              |          change visual appearance to flat style |
+
+See [Demo](https://bagahunda.github.io).

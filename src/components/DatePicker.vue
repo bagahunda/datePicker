@@ -86,7 +86,7 @@ export default {
       default: ""
     },
     yearsPeriod: {
-      type: Number,
+      type: [Number, String],
       default: 50
     },
     disabledDays: {
@@ -152,7 +152,7 @@ export default {
   created() {
     let date = new Date();
     let year = date.getFullYear();
-    for (let i = 0; i < this.yearsPeriod; i++) {
+    for (let i = 0; i < +this.yearsPeriod; i++) {
       this.years.unshift({ year: year - i, disabled: false });
     }
 
