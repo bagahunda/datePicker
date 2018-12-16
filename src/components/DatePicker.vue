@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style['picker']" v-clickOutside="closeOptions">
+  <div :class="[$style['picker'], $style[`${theme}`]]" v-clickOutside="closeOptions">
     <div
       :class="[$style['picker__value'], showOptions ? $style.activeOptions : '']"
       @click="activateDatePicker"
@@ -17,7 +17,7 @@
             <span
               v-for="(day, index) in days"
               :key="index"
-              :class="[date.day === day.day ? $style.active : '', day.disabled ? $style['picker__item--disabled'] : '']"
+              :class="[date.day == day.day ? $style.active : '', day.disabled ? $style['picker__item--disabled'] : '']"
               @click="onSelectDay($event)"
             >{{ day.day }}</span>
           </div>
@@ -29,11 +29,11 @@
               @click="onSelectMonth($event)"
             >{{ month.month }}</span>
           </div>
-          <div :class="$style['picker__item']">
+          <div :class="[$style['picker__item'], $style['picker__item--year']]">
             <span
               v-for="(year, index) in years"
               :key="index + 901"
-              :class="[date.year === year.year ? $style.active : '', year.disabled ? $style['picker__item--disabled'] : '']"
+              :class="[date.year == year.year ? $style.active : '', year.disabled ? $style['picker__item--disabled'] : '']"
               @click="onSelectYear($event)"
             >{{ year.year }}</span>
           </div>
@@ -55,33 +55,27 @@ let clickOutside = {
       if (compName) {
         warn += `Found in component '${compName}'`;
       }
+      // eslint-disable-next-line
       console.warn(warn);
     }
+
+    const clickHandler =
+      "ontouchstart" in document.documentElement ? "touchstart" : "click";
 
     el.__ClickOutsideHandler__ = event => {
       if (!(el === event.target || el.contains(event.target))) {
         binding.value(event);
       }
     };
-    document.body.addEventListener("click", el.__ClickOutsideHandler__);
+    document.body.addEventListener(clickHandler, el.__ClickOutsideHandler__);
   },
   unbind(el) {
-    document.body.removeEventListener("click", el.__ClickOutsideHandler__);
+    const clickHandler =
+      "ontouchstart" in document.documentElement ? "touchstart" : "click";
+    document.body.removeEventListener(clickHandler, el.__ClickOutsideHandler__);
     delete el.__ClickOutsideHandler__;
   }
 };
-let date = new Date();
-let year = date.getFullYear();
-let day = date.getDay();
-let month = date.getMonth();
-let years = [];
-let days = [];
-for (let i = 0; i < 10; i++) {
-  years.push({ year: year - i, disabled: false });
-}
-for (let i = 0; i < 31; i++) {
-  days.push({ day: 31 - i, disabled: false });
-}
 
 export default {
   name: "date-picker",
@@ -91,6 +85,10 @@ export default {
       type: [String, Number, Date],
       default: ""
     },
+    yearsPeriod: {
+      type: Number,
+      default: 50
+    },
     disabledDays: {
       type: Array
     },
@@ -99,12 +97,15 @@ export default {
     },
     disabledYears: {
       type: Array
+    },
+    theme: {
+      type: String,
+      default: "shadow"
     }
   },
 
   data() {
     return {
-      days: days.reverse(),
       months: [
         { month: "january", disabled: false },
         { month: "february", disabled: false },
@@ -119,7 +120,8 @@ export default {
         { month: "november", disabled: false },
         { month: "december", disabled: false }
       ],
-      years: years.reverse(),
+      years: [],
+      days: [],
       showOptions: false,
       selectDay: false,
       selectMonth: false,
@@ -148,6 +150,16 @@ export default {
   },
 
   created() {
+    let date = new Date();
+    let year = date.getFullYear();
+    for (let i = 0; i < this.yearsPeriod; i++) {
+      this.years.unshift({ year: year - i, disabled: false });
+    }
+
+    for (let i = 0; i < 31; i++) {
+      this.days.unshift({ day: 31 - i, disabled: false });
+    }
+
     if (this.disabledDays) {
       for (let i of this.disabledDays) {
         this.days[i - 1].disabled = true;
@@ -249,10 +261,15 @@ export default {
   position: relative;
   width: 280px;
   border-radius: 6px;
-  box-shadow: 0 6px 24px rgba(17, 17, 19, 0.12);
   background-color: white;
   font-weight: bold;
+  box-shadow: 0 6px 24px rgba(17, 17, 19, 0.12);
   box-sizing: border-box;
+}
+
+.flat {
+  box-shadow: none;
+  border: 1px solid rgba(17, 17, 19, 0.4);
 }
 
 .picker *,
@@ -315,6 +332,11 @@ export default {
 
   .picker__item--month {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .picker__item--year {
+    max-height: 231px;
+    overflow-y: auto;
   }
 
   .picker__item span {
