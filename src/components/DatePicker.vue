@@ -23,7 +23,7 @@
           </div>
           <div :class="[$style['picker__item'], $style['picker__item--month']]">
             <span
-              v-for="(month, index) in months"
+              v-for="(month, index) in months[locale]"
               :key="index + 101"
               :class="[date.month === month.month ? $style.active : '', month.disabled ? $style['picker__item--disabled'] : '']"
               @click="onSelectMonth($event)"
@@ -101,25 +101,45 @@ export default {
     theme: {
       type: String,
       default: "shadow"
+    },
+    locale: {
+      type: String,
+      default: "en"
     }
   },
 
   data() {
     return {
-      months: [
-        { month: "january", disabled: false },
-        { month: "february", disabled: false },
-        { month: "march", disabled: false },
-        { month: "april", disabled: false },
-        { month: "may", disabled: false },
-        { month: "june", disabled: false },
-        { month: "july", disabled: false },
-        { month: "august", disabled: false },
-        { month: "september", disabled: false },
-        { month: "october", disabled: false },
-        { month: "november", disabled: false },
-        { month: "december", disabled: false }
-      ],
+      months: {
+        en: [
+          { month: "january", disabled: false },
+          { month: "february", disabled: false },
+          { month: "march", disabled: false },
+          { month: "april", disabled: false },
+          { month: "may", disabled: false },
+          { month: "june", disabled: false },
+          { month: "july", disabled: false },
+          { month: "august", disabled: false },
+          { month: "september", disabled: false },
+          { month: "october", disabled: false },
+          { month: "november", disabled: false },
+          { month: "december", disabled: false }
+        ],
+        ru: [
+          { month: "январь", disabled: false },
+          { month: "февраль", disabled: false },
+          { month: "март", disabled: false },
+          { month: "апрель", disabled: false },
+          { month: "май", disabled: false },
+          { month: "июнь", disabled: false },
+          { month: "июль", disabled: false },
+          { month: "август", disabled: false },
+          { month: "сентябрь", disabled: false },
+          { month: "октябрь", disabled: false },
+          { month: "ноябрь", disabled: false },
+          { month: "декабрь", disabled: false }
+        ]
+      },
       years: [],
       days: [],
       showOptions: false,
@@ -321,6 +341,36 @@ export default {
   color: white;
 }
 
+.picker__item span {
+  display: inline-block;
+  width: calc((100% - 50px) / 5);
+  padding: 5px 0;
+  margin: 5px;
+  text-align: center;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.picker__item--month span {
+  width: calc((100% - 20px) / 2);
+}
+
+.picker__item {
+  width: 100%;
+  padding: 1em;
+}
+
+.picker__item--year {
+  max-height: 231px;
+  overflow-y: auto;
+}
+
+.picker__item--disabled {
+  color: rgba(17, 17, 19, 0.4);
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
 @supports (grid-area: auto) {
   .picker__item {
     width: 100%;
@@ -334,79 +384,11 @@ export default {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .picker__item--year {
-    max-height: 231px;
-    overflow-y: auto;
-  }
-
-  .picker__item span {
+  .picker__item span,
+  .picker__item--month span {
+    width: auto;
     padding: 5px;
-    text-align: center;
-    border-radius: 3px;
-    cursor: pointer;
+    margin: 0;
   }
 }
-
-.picker__item--disabled {
-  color: rgba(17, 17, 19, 0.4);
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-/* .picker__item {
-  width: 280px;
-  padding: 1em;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.picker__day span {
-  width: calc((100% - 60px) / 7);
-  padding: 5px;
-  margin: 0 5px 1em;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.picker__day span:last-child {
-  margin-right: auto;
-}
-
-.picker__month {
-  width: 280px;
-  padding: 1em;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.picker__month span {
-  width: calc((100% - 20px) / 3);
-  margin: 0 0 1em;
-  padding: 5px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.picker__year {
-  width: 280px;
-  padding: 1em;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.picker__year span {
-  width: calc((100% - 30px) / 4);
-  margin: 0 0 1em;
-  padding: 5px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 3px;
-} */
 </style>

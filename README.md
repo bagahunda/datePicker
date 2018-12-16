@@ -27,5 +27,6 @@ npm install oh-my-date
 | :disabledMonths="['january', 'february']" | you can disable some months from being selected |
 | :disabledYears=['1917', '2008']           | you can disable some years from being selected  |
 | theme="flat"                              | change visual appearance to flat style          |
+| locale="ru"                               | change locale, default EN                       |
 
 See [Demo](https://bagahunda.github.io).
