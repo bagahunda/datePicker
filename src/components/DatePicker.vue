@@ -4,11 +4,11 @@
       :class="[$style['picker__value'], showOptions ? $style.activeOptions : '']"
       @click="activateDatePicker"
     >
-      <b :class="selectDay ? $style.active : ''">{{ date.day ? date.day : 'day' }}</b>
+      <b :class="selectDay ? $style.active : ''">{{ date.day ? date.day : placeholder[locale].day }}</b>
       <span>/</span>
-      <b :class="selectMonth ? $style.active : ''">{{ date.month ? date.month : 'month' }}</b>
+      <b :class="selectMonth ? $style.active : ''">{{ date.month ? date.month : placeholder[locale].month }}</b>
       <span>/</span>
-      <b :class="selectYear ? $style.active : ''">{{ date.year ? date.year : 'year' }}</b>
+      <b :class="selectYear ? $style.active : ''">{{ date.year ? date.year : placeholder[locale].year }}</b>
     </div>
     <transition name="expand" @enter="enter" @after-enter="afterEnter" @leave="leave">
       <div :class="$style['picker__options']" v-if="showOptions">
@@ -110,6 +110,18 @@ export default {
 
   data() {
     return {
+      placeholder: {
+        en: {
+          day: "day",
+          month: "month",
+          year: "year"
+        },
+        ru : {
+          day: "день",
+          month: "месяц",
+          year: "год"
+        }
+      },
       months: {
         en: [
           { month: "january", disabled: false },
