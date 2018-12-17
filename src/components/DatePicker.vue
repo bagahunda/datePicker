@@ -6,9 +6,13 @@
     >
       <b :class="selectDay ? $style.active : ''">{{ date.day ? date.day : placeholder[locale].day }}</b>
       <span>/</span>
-      <b :class="selectMonth ? $style.active : ''">{{ date.month ? date.month : placeholder[locale].month }}</b>
+      <b
+        :class="selectMonth ? $style.active : ''"
+      >{{ date.month ? date.month : placeholder[locale].month }}</b>
       <span>/</span>
-      <b :class="selectYear ? $style.active : ''">{{ date.year ? date.year : placeholder[locale].year }}</b>
+      <b
+        :class="selectYear ? $style.active : ''"
+      >{{ date.year ? date.year : placeholder[locale].year }}</b>
     </div>
     <transition name="expand" @enter="enter" @after-enter="afterEnter" @leave="leave">
       <div :class="$style['picker__options']" v-if="showOptions">
@@ -116,7 +120,7 @@ export default {
           month: "month",
           year: "year"
         },
-        ru : {
+        ru: {
           day: "день",
           month: "месяц",
           year: "год"
@@ -194,21 +198,29 @@ export default {
 
     if (this.disabledDays) {
       for (let i of this.disabledDays) {
-        this.days[i - 1].disabled = true;
+        for (let j of this.days) {
+          if (j.day == i) {
+            j.disabled = true;
+          }
+        }
       }
     }
 
     if (this.disabledMonths) {
       for (let i of this.disabledMonths) {
-        this.months[i - 1].disabled = true;
+        for (let j of this.months[this.locale]) {
+          if (j.month == i) {
+            j.disabled = true;
+          }
+        }
       }
     }
 
     if (this.disabledYears) {
-      for (let i in this.disabledYears) {
-        for (let j in this.years) {
-          if (this.years[j].year === this.disabledYears[i]) {
-            this.years[j].disabled = true;
+      for (let i of this.disabledYears) {
+        for (let j of this.years) {
+          if (j.year == i) {
+            j.disabled = true;
           }
         }
       }
