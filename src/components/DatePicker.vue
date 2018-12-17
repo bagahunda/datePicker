@@ -241,8 +241,23 @@ export default {
     },
 
     onSelectDay(e) {
+      let date = new Date();
+      let year = date.getFullYear();
+
       this.selectDay = false;
       this.date.day = e.target.innerText;
+
+      for (let i in this.months[this.locale]) {
+        let counter = i * 1 + 1;
+        let qty = this.getDaysInMonth(counter, year);
+
+        if (this.date.day * 1 > qty) {
+          this.months[this.locale][i].disabled = true;
+        } else {
+          this.months[this.locale][i].disabled = false;
+        }
+      }
+
       this.selectMonth = true;
     },
 
@@ -258,6 +273,10 @@ export default {
       this.showOptions = false;
       let val = new Date(this.date.day + this.date.month + this.date.year);
       this.$emit("input", val);
+    },
+
+    getDaysInMonth(month, year) {
+      return new Date(year, month, 0).getDate();
     },
 
     enter(el) {
@@ -376,7 +395,7 @@ export default {
 }
 
 .picker__item--month span {
-  width: calc((100% - 20px) / 2);
+  width: calc((100% - 30px) / 3);
 }
 
 .picker__item {
@@ -395,7 +414,7 @@ export default {
   cursor: not-allowed;
 }
 
-@supports (grid-area: auto) {
+/* @supports (grid-area: auto) {
   .picker__item {
     width: 100%;
     padding: 1em;
@@ -414,5 +433,5 @@ export default {
     padding: 5px;
     margin: 0;
   }
-}
+} */
 </style>
