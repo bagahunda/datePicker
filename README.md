@@ -1,6 +1,6 @@
 # OH-MY-DATE
 
-## Simple and alegant datepicker. Finally 🤘
+## Simple and alegant Vue datepicker. Finally 🤘
 
 ## How to use
 
@@ -10,7 +10,7 @@
 npm install oh-my-date
 ```
 
-### Use in your templates:
+### Use in your vue templates:
 
 ```
 <date-picker v-model="date"></date-picker>
