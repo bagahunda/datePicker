@@ -13,7 +13,7 @@ npm install oh-my-date
 ### Use in your templates:
 
 ```
-<date-picker></date-picker>
+<date-picker v-model="date"></date-picker>
 ```
 
 ## Settings
