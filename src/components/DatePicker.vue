@@ -253,6 +253,9 @@ export default {
 
         if (this.date.day * 1 > qty) {
           this.months[this.locale][i].disabled = true;
+          if (i == 1 && this.date.day == 29) {
+            this.months[this.locale][i].disabled = false;
+          }
         } else {
           this.months[this.locale][i].disabled = false;
         }
