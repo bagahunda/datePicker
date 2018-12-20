@@ -1,6 +1,6 @@
 # OH-MY-DATE
 
-## Simple and alegant Vue datepicker. Finally 🤘
+## Simple and elegant Vue datepicker. Finally 🤘
 
 ## How to use
 

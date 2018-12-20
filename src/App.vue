@@ -14,7 +14,7 @@ export default {
 
   data() {
     return {
-      date: ""
+      date: "Thu Dec 20 2018 16:28:19 GMT+0300"
     };
   }
 };

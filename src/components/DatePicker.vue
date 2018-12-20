@@ -186,6 +186,12 @@ export default {
   },
 
   created() {
+    if (this.value) {
+      let date = new Date(this.value);
+      this.date.day = date.getDate();
+      this.date.month = date.getMonth() + 1;
+      this.date.year = date.getFullYear();
+    }
     let date = new Date();
     let year = date.getFullYear();
     for (let i = 0; i < +this.yearsPeriod; i++) {
